@@ -1,3 +1,5 @@
+// TODO: FIND BUG
+
 public class GameOfStones {
 
 	public int count(int[] stones) {

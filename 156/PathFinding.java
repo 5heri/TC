@@ -1,5 +1,3 @@
-// BUGS
-
 import java.util.LinkedList;
 
 public class PathFinding {
@@ -20,27 +18,27 @@ public class PathFinding {
 			while (!q.isEmpty()) {
 				Node top = q.remove();
 					
-				if (checkConditions(top, board)) {
-					if (switchedPositions(start, top)) {
-						return top.steps;
-					}
-					
-					for (int p1xH = -1; p1xH <= 1; p1xH++) {
-						for (int p1yH = -1; p1yH <= 1; p1yH++) {
-							for (int p2xH = -1; p2xH <= 1; p2xH++) {
-								for (int p2yH = -1; p2yH <= 1; p2yH++) {
-									if (!(top.p1x == top.p2x + p2xH 
-								    	&& top.p1y == top.p2y + p2yH
-								    	&& top.p2x == top.p1x + p1xH
-								    	&& top.p2y == top.p1x + p1xH)) {
-								    	
-								    	pushToQueue(q, new Node(top.p1x + p1xH,
-								    	                        top.p1y + p1yH,
-								    	                        top.p2x + p2xH,
-								    	                        top.p2y + p2yH,
-								    	                        top.steps + 1));	
-								    }			
-								}
+				if (switchedPositions(start, top)) {
+					return top.steps;
+				}
+				
+				for (int p1xH = -1; p1xH <= 1; p1xH++) {
+					for (int p1yH = -1; p1yH <= 1; p1yH++) {
+						for (int p2xH = -1; p2xH <= 1; p2xH++) {
+							for (int p2yH = -1; p2yH <= 1; p2yH++) {
+								if (!(top.p1x == top.p2x + p2xH 
+							    	&& top.p1y == top.p2y + p2yH
+							    	&& top.p2x == top.p1x + p1xH
+							    	&& top.p2y == top.p1y + p1yH)) {
+							    	Node n = new Node(top.p1x + p1xH,
+							    	                  top.p1y + p1yH,
+							    	                  top.p2x + p2xH,
+							    	                  top.p2y + p2yH,
+							    	                  top.steps + 1);
+							    	if (checkConditions(n, board)) {
+							    		pushToQueue(q, n);
+							    	}
+							    }			
 							}
 						}
 					}
@@ -51,11 +49,19 @@ public class PathFinding {
 	
 	private boolean checkConditions(Node n, String[] board) {
 		return n.p1x >= 0 && n.p1x < board.length
-			&& n.p2x >= 0 && n.p2y < board[0].length()
+			&& n.p1y >= 0 && n.p1y < board[0].length()
+			&& n.p2x >= 0 && n.p2x < board.length
+			&& n.p2y >= 0 && n.p2y < board[0].length()
 			&& board[n.p1x].charAt(n.p1y) != 'X'
 			&& board[n.p2x].charAt(n.p2y) != 'X'
-			&& n.p1x != n.p2x && n.p1y != n.p2y;  
-	
+			&& !(n.p1x == n.p2x && n.p1y == n.p2y);  
+	}
+
+	private boolean inGrid(Node n, String[] board) {
+		return n.p1x >= 0 && n.p1x < board.length
+			&& n.p1y >= 0 && n.p1y < board[0].length()
+			&& n.p2x >= 0 && n.p2x < board.length
+			&& n.p2y >= 0 && n.p2y < board[0].length();
 	}
 	
 	private boolean switchedPositions(Node start, Node top) {
@@ -77,22 +83,15 @@ public class PathFinding {
 				}
 			}
 		}
-		System.out.println(n.p1x + " " + n.p1y + " " + n.p2x + " " + n.p2y);
 		return n;
-	
 	}
 	
 	private void pushToQueue(LinkedList<Node> q, Node n) {
-		System.out.println(n.p1x + " " + n.p1y + " " + n.p2x + " " + n.p2y);
 		if (!visited[n.p1x][n.p1y][n.p2x][n.p2y]) {
 			q.add(n);
 			visited[n.p1x][n.p1y][n.p2x][n.p2y] = true;
 		}
 	}
-	
-	
-	
-	
 	
 	class Node {
 		int p1x, p1y, p2x, p2y;
